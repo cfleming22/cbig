@@ -1,0 +1,153 @@
+CBIG - CodeBase Insight Generator
+Launch Instructions v1.3.0
+
+================================================================================
+QUICK START
+================================================================================
+
+1. INSTALL DEPENDENCIES
+   uv sync
+
+2. RUN CBIG ON ANY REPOSITORY
+   uv run cbig main -p /path/to/your/repo
+
+3. GENERATE DIRECTORY-LEVEL ANALYSIS
+   uv run cbig main -p . --by-dir --output-dir docs/
+
+================================================================================
+COMMON USE CASES
+================================================================================
+
+BASIC REPOSITORY ANALYSIS:
+   uv run cbig main -p .
+   → Generates: repo_code_p.md (or mixed language suffix)
+
+STRUCTURED OUTPUT FOR CI/CD:
+   uv run cbig main -p . --format json -o analysis.json --no-md
+
+PER-DIRECTORY BREAKDOWN:
+   uv run cbig main -p . --by-dir --output-dir analysis/
+   → Generates multiple markdown files in analysis/ directory
+
+SINGLE FILE ANALYSIS:
+   uv run cbig main -p src/main.py --by-file
+   → Generates: main_code_p.md
+
+WITH CACHING (RECOMMENDED FOR LARGE REPOS):
+   uv run cbig main -p . --cache-dir .cbig_cache
+   → First run slower, subsequent runs much faster
+
+LANGUAGE-SPECIFIC ANALYSIS:
+   uv run cbig main -p . -l python,java
+   → Only analyzes Python and Java files
+
+EXCLUDE PATTERNS:
+   uv run cbig main -p . --exclude "tests/*" --exclude "node_modules/*"
+
+================================================================================
+OUTPUT FORMATS
+================================================================================
+
+MARKDOWN (DEFAULT):
+   uv run cbig main -p .
+   → Repomix-style markdown with tables for deps, functions, classes
+
+JSON:
+   uv run cbig main -p . --format json -o report.json
+   → Machine-readable structured data
+
+YAML:
+   uv run cbig main -p . --format yaml -o report.yaml
+   → Human-readable structured data
+
+PLAIN TEXT SUMMARY:
+   uv run cbig main -p . --format txt
+   → Concise text overview printed to stdout
+
+================================================================================
+PERFORMANCE OPTIMIZATION
+================================================================================
+
+FOR LARGE REPOSITORIES:
+1. Enable caching:
+   uv run cbig main -p . --cache-dir .cbig_cache
+
+2. Use multiple workers:
+   uv run cbig main -p . -j 8
+
+3. Filter by language:
+   uv run cbig main -p . -l python
+
+4. Exclude unnecessary directories:
+   uv run cbig main -p . --exclude "build/*" --exclude "dist/*"
+
+================================================================================
+TROUBLESHOOTING
+================================================================================
+
+ERROR: "No files found"
+SOLUTION: Check that the path contains supported source files or adjust
+          --include/--exclude patterns
+
+ERROR: "Tree-sitter not available"
+SOLUTION: This is a warning only. Regex parsers will be used instead.
+
+ERROR: "Permission denied"
+SOLUTION: Ensure you have read access to the target directory
+
+SLOW PERFORMANCE:
+SOLUTION: Use --cache-dir for subsequent runs, reduce --max-workers if
+          running out of memory
+
+================================================================================
+BUILD FOR DISTRIBUTION
+================================================================================
+
+DEVELOPMENT INSTALL:
+   uv tool install --editable .
+
+NATIVE BINARY BUILD:
+   uv build
+   # Binary will be in dist/
+
+APPLE M3 OPTIMIZED:
+   uv build --target aarch64-apple-darwin
+
+================================================================================
+ENVIRONMENT REQUIREMENTS
+================================================================================
+
+- Python 3.11+
+- uv package manager
+- Supported platforms: macOS (M3 native), Linux x86_64/aarch64, Windows x86_64
+
+================================================================================
+EXIT CODES
+================================================================================
+
+0: Success
+1: Invalid arguments
+2: Parse error
+3: I/O error (file not found, permission denied)
+4: Unsupported language
+
+================================================================================
+EXAMPLES WITH REAL PROJECTS
+================================================================================
+
+ANALYZE A PYTHON PROJECT:
+   uv run cbig main -p ~/my_django_project --by-dir --output-dir docs/
+
+ANALYZE A REACT PROJECT:
+   uv run cbig main -p ~/my_react_app -l javascript,typescript --by-dir
+
+EXTRACT DEPENDENCIES ONLY:
+   uv run cbig main -p . --no-functions --no-classes --format yaml -o deps.yaml
+
+GENERATE ARCHITECTURE OVERVIEW:
+   uv run cbig main -p . --comments --sort functions=name --sort classes=name
+
+================================================================================
+
+For more detailed documentation, see README.md
+For issues and feature requests, visit: https://github.com/[repo]/issues
