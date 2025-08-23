@@ -1,0 +1,55 @@
+why do i get this error | ~/dv/tools/code-extractor % cd cbig 
+  ~/dv/tools/code-extractor/cbig % source .venv/bin/activate
+  (cbig) ~/dv/tools/code-extractor/cbig % uv sync
+  warning: `VIRTUAL_ENV=.venv` does not match the project environment path `/Users/cjmacbook/dv/tools/.venv` and will be ignored; use 
+  `--active` to target the active environment instead
+  Resolved 26 packages in 2ms
+  Audited 23 packages in 0.05ms
+  (cbig) ~/dv/tools/code-extractor/cbig %
+
+ The error occurs because you have a conflicting virtual environment setup. Here's WHAT is happening and HOW to fix it:
+
+  WHY This Happens
+
+  - You activated a local .venv in the cbig directory
+  - But uv detected a project environment at /Users/cjmacbook/dv/tools/.venv (parent directory)
+  - uv is ignoring your activated environment and using its own
+
+  HOW to Fix - 3 Options:
+
+  Option 1: Use uv's environment directly (RECOMMENDED)
+  cd /Users/cjmacbook/dv/tools/code-extractor/cbig
+  deactivate  # Exit the current venv
+  uv sync
+  uv run cbig main -p .
+  No need to activate anything - uv run handles it automatically.
+
+  Option 2: Force uv to use your active environment
+  cd /Users/cjmacbook/dv/tools/code-extractor/cbig
+  source .venv/bin/activate
+  uv sync --active
+  uv run cbig main -p .
+
+  Option 3: Clean slate approach
+  cd /Users/cjmacbook/dv/tools/code-extractor/cbig
+  deactivate
+  rm -rf .venv
+  rm -rf /Users/cjmacbook/dv/tools/.venv
+  uv venv
+  uv sync
+  uv run cbig main -p .
+
+  WHEN to use each:
+
+  - Option 1: Fastest, cleanest - let uv manage everything
+  - Option 2: If you need a specific venv active for other tools
+  - Option 3: If environments are corrupted or conflicting
+
+  Just run Option 1 commands and CBIG will work immediately.
+
+
+>                                                                                                                                          
+
+  ? for shortcuts
+
+
